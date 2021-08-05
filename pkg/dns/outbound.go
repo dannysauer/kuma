@@ -3,15 +3,22 @@ package dns
 import (
 	"sort"
 	"strconv"
+<<<<<<< HEAD:pkg/dns/outbound.go
 
 	"github.com/kumahq/kuma/pkg/core/resources/model"
 
-	"github.com/pkg/errors"
+=======
+	"strings"
 
-	"github.com/kumahq/kuma/pkg/dns/vips"
+	"github.com/asaskevich/govalidator"
+>>>>>>> d6acd79a (chore(*) replace goimports with gci (#2489)):pkg/xds/topology/dns.go
+	"github.com/pkg/errors"
 
 	mesh_proto "github.com/kumahq/kuma/api/mesh/v1alpha1"
 	core_mesh "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
+	"github.com/kumahq/kuma/pkg/core/resources/model"
+	"github.com/kumahq/kuma/pkg/core/xds"
+	"github.com/kumahq/kuma/pkg/dns/vips"
 )
 
 const VIPListenPort = uint32(80)

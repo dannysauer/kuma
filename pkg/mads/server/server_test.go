@@ -23,6 +23,7 @@ import (
 	mads_v1_client "github.com/kumahq/kuma/pkg/mads/v1/client"
 	"github.com/kumahq/kuma/pkg/metrics"
 	"github.com/kumahq/kuma/pkg/plugins/resources/memory"
+	"github.com/kumahq/kuma/pkg/test"
 )
 
 type testRuntime struct {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
+<<<<<<< HEAD:pkg/dns/outbound_test.go
 	"github.com/kumahq/kuma/pkg/core/resources/model"
 	"github.com/kumahq/kuma/pkg/util/proto"
 
@@ -15,7 +16,18 @@ import (
 	mesh_proto "github.com/kumahq/kuma/api/mesh/v1alpha1"
 	core_mesh "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
 	"github.com/kumahq/kuma/pkg/dns"
+=======
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+
+	mesh_proto "github.com/kumahq/kuma/api/mesh/v1alpha1"
+	core_mesh "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
+	"github.com/kumahq/kuma/pkg/core/resources/model"
+	"github.com/kumahq/kuma/pkg/core/xds"
+	"github.com/kumahq/kuma/pkg/dns/vips"
+>>>>>>> d6acd79a (chore(*) replace goimports with gci (#2489)):pkg/xds/topology/dns_test.go
 	test_model "github.com/kumahq/kuma/pkg/test/resources/model"
+	"github.com/kumahq/kuma/pkg/xds/topology"
 )
 
 var _ = Describe("VIPOutbounds", func() {
