@@ -26,6 +26,10 @@ import (
 	"github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
 	"github.com/kumahq/kuma/pkg/core/resources/model"
 	"github.com/kumahq/kuma/pkg/core/resources/store"
+<<<<<<< HEAD
+=======
+	"github.com/kumahq/kuma/pkg/kds/definitions"
+>>>>>>> 686935a1 (chore(tools): add to resource-gen.go generation of kds options (#2487))
 	"github.com/kumahq/kuma/pkg/kds/global"
 	sync_store "github.com/kumahq/kuma/pkg/kds/store"
 	"github.com/kumahq/kuma/pkg/plugins/resources/memory"
@@ -51,7 +55,7 @@ var _ = Describe("Global Sync", func() {
 		for i := 0; i < numOfZones; i++ {
 			wg.Add(1)
 			zoneStore := memory.NewStore()
-			serverStream := kds_setup.StartServer(zoneStore, wg, fmt.Sprintf(zoneName, i), kds.SupportedTypes, reconcile.Any)
+			serverStream := kds_setup.StartServer(zoneStore, wg, fmt.Sprintf(zoneName, i), definitions.All.Get(), reconcile.Any)
 			serverStreams = append(serverStreams, serverStream)
 			zoneStores = append(zoneStores, zoneStore)
 		}
@@ -199,8 +203,7 @@ var _ = Describe("Global Sync", func() {
 		}
 
 		actualProvidedTypes = append(actualProvidedTypes, extraTypes...)
-		Expect(actualProvidedTypes).To(HaveLen(len(global.ProvidedTypes)))
-		Expect(actualProvidedTypes).To(ConsistOf(global.ProvidedTypes))
+		Expect(actualProvidedTypes).To(ConsistOf(definitions.All.Select(definitions.ProvidedByGlobal)))
 	})
 
 })

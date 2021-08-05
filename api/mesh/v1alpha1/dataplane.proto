@@ -16,7 +16,13 @@ message Dataplane {
   option (kuma.mesh.resource).name = "DataplaneResource";
   option (kuma.mesh.resource).type = "Dataplane";
   option (kuma.mesh.resource).package = "mesh";
+<<<<<<< HEAD
   option (kuma.mesh.ws).name = "dataplane";
+=======
+  option (kuma.mesh.resource).kds.send_to_zone = true;
+  option (kuma.mesh.resource).kds.send_to_global = true;
+  option (kuma.mesh.resource).ws.name = "dataplane";
+>>>>>>> 686935a1 (chore(tools): add to resource-gen.go generation of kds options (#2487))
 
   // Networking describes inbound and outbound interfaces of a dataplane.
   message Networking {

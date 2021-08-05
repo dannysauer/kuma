@@ -25,6 +25,11 @@ import (
 
 	"github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
 	"github.com/kumahq/kuma/pkg/core/resources/store"
+<<<<<<< HEAD
+=======
+	"github.com/kumahq/kuma/pkg/kds/definitions"
+	"github.com/kumahq/kuma/pkg/kds/reconcile"
+>>>>>>> 686935a1 (chore(tools): add to resource-gen.go generation of kds options (#2487))
 	"github.com/kumahq/kuma/pkg/plugins/resources/memory"
 )
 
@@ -47,7 +52,7 @@ var _ = Describe("KDS Server", func() {
 
 		wg := &sync.WaitGroup{}
 		wg.Add(1)
-		stream := kds_setup.StartServer(s, wg, "test-cluster", kds.SupportedTypes, reconcile.Any)
+		stream := kds_setup.StartServer(s, wg, "test-cluster", definitions.All.Get(), reconcile.Any)
 
 		tc = &kds_verifier.TestContextImpl{
 			ResourceStore:      s,
@@ -84,7 +89,7 @@ var _ = Describe("KDS Server", func() {
 			kds_samples.ZoneIngressInsight,
 			kds_samples.Config,
 		}).
-			To(HaveLen(len(kds.SupportedTypes)))
+			To(HaveLen(len(definitions.All)))
 
 		vrf := kds_verifier.New().
 			// NOTE: The resources all have to be created before any DiscoveryRequests are made.

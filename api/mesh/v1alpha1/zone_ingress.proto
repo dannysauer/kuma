@@ -16,8 +16,15 @@ message ZoneIngress {
   option (kuma.mesh.resource).type = "ZoneIngress";
   option (kuma.mesh.resource).global = true;
   option (kuma.mesh.resource).package = "mesh";
+<<<<<<< HEAD
   option (kuma.mesh.ws).name = "zone-ingress";
   option (kuma.mesh.ws).plural = "zone-ingresses";
+=======
+  option (kuma.mesh.resource).kds.send_to_global = true;
+  option (kuma.mesh.resource).kds.send_to_zone = true;
+  option (kuma.mesh.resource).ws.name = "zone-ingress";
+  option (kuma.mesh.resource).ws.plural = "zone-ingresses";
+>>>>>>> 686935a1 (chore(tools): add to resource-gen.go generation of kds options (#2487))
 
   // Zone field contains Zone name where ingress is serving, field will be
   // automatically set by Global Kuma CP

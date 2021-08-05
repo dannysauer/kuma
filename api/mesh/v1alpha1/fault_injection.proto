@@ -22,7 +22,12 @@ message FaultInjection {
   option (kuma.mesh.resource).name = "FaultInjectionResource";
   option (kuma.mesh.resource).type = "FaultInjection";
   option (kuma.mesh.resource).package = "mesh";
+<<<<<<< HEAD
   option (kuma.mesh.ws).name = "fault-injection";
+=======
+  option (kuma.mesh.resource).kds.send_to_zone = true;
+  option (kuma.mesh.resource).ws.name = "fault-injection";
+>>>>>>> 686935a1 (chore(tools): add to resource-gen.go generation of kds options (#2487))
 
   // List of selectors to match dataplanes that are sources of traffic.
   repeated Selector sources = 1;

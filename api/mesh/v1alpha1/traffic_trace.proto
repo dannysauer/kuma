@@ -20,7 +20,12 @@ message TrafficTrace {
   option (kuma.mesh.resource).name = "TrafficTraceResource";
   option (kuma.mesh.resource).type = "TrafficTrace";
   option (kuma.mesh.resource).package = "mesh";
+<<<<<<< HEAD
   option (kuma.mesh.ws).name = "traffic-trace";
+=======
+  option (kuma.mesh.resource).kds.send_to_zone = true;
+  option (kuma.mesh.resource).ws.name = "traffic-trace";
+>>>>>>> 686935a1 (chore(tools): add to resource-gen.go generation of kds options (#2487))
 
   // List of selectors to match dataplanes.
   repeated Selector selectors = 1;

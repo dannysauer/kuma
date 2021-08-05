@@ -28,6 +28,11 @@ import (
 	"github.com/kumahq/kuma/pkg/core/resources/store"
 	"github.com/kumahq/kuma/pkg/core/runtime/component"
 	kds_client "github.com/kumahq/kuma/pkg/kds/client"
+<<<<<<< HEAD
+=======
+	kds_context "github.com/kumahq/kuma/pkg/kds/context"
+	"github.com/kumahq/kuma/pkg/kds/definitions"
+>>>>>>> 686935a1 (chore(tools): add to resource-gen.go generation of kds options (#2487))
 	sync_store "github.com/kumahq/kuma/pkg/kds/store"
 	"github.com/kumahq/kuma/pkg/kds/zone"
 	"github.com/kumahq/kuma/pkg/plugins/resources/memory"
@@ -50,7 +55,7 @@ var _ = Describe("Zone Sync", func() {
 	zoneName := "zone-1"
 
 	newPolicySink := func(zoneName string, resourceSyncer sync_store.ResourceSyncer, cs *grpc.MockClientStream, rt core_runtime.Runtime) component.Component {
-		return kds_client.NewKDSSink(core.Log, zone.ConsumedTypes, kds_client.NewKDSStream(cs, zoneName), zone.Callbacks(rt, resourceSyncer, false, zoneName, nil))
+		return kds_client.NewKDSSink(core.Log, definitions.All.Select(definitions.ConsumedByZone), kds_client.NewKDSStream(cs, zoneName), zone.Callbacks(rt, resourceSyncer, false, zoneName, nil))
 	}
 	start := func(comp component.Component, stop chan struct{}) {
 		go func() {
@@ -91,7 +96,7 @@ var _ = Describe("Zone Sync", func() {
 		wg.Add(1)
 
 		kdsCtx := kds_context.DefaultContext(manager.NewResourceManager(globalStore), "global")
-		serverStream := setup.StartServer(globalStore, wg, "global", zone.ConsumedTypes, kdsCtx.GlobalProvidedFilter)
+		serverStream := setup.StartServer(globalStore, wg, "global", definitions.All.Select(definitions.ConsumedByZone), kdsCtx.GlobalProvidedFilter)
 
 		stop := make(chan struct{})
 		clientStream := serverStream.ClientStream(stop)
@@ -175,8 +180,7 @@ var _ = Describe("Zone Sync", func() {
 		}
 
 		actualConsumedTypes = append(actualConsumedTypes, extraTypes...)
-		Expect(actualConsumedTypes).To(HaveLen(len(zone.ConsumedTypes)))
-		Expect(actualConsumedTypes).To(ConsistOf(zone.ConsumedTypes))
+		Expect(actualConsumedTypes).To(ConsistOf(definitions.All.Select(definitions.ConsumedByZone)))
 	})
 
 	It("should not delete predefined ConfigMaps in the Zone cluster", func() {
