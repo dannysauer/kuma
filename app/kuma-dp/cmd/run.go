@@ -68,7 +68,12 @@ func newRunCmd(rootCtx *RootContext) *cobra.Command {
 			}
 
 			if err != nil {
+<<<<<<< HEAD
 				runLog.Error(err, "unable to read provided %s policy", cfg.Dataplane.ProxyType)
+=======
+				runLog.Error(err, "failed to read policy", "proxyType", cfg.Dataplane.ProxyType)
+
+>>>>>>> cc10d196 (fix(kuma-cp) add owner when create ZoneIngressInsight (#2456))
 				return err
 			}
 
