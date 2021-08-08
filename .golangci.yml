@@ -3,6 +3,7 @@ linters:
     - bodyclose
     - gocritic
     - govet
+    - importas
     - misspell
     - unconvert
     - whitespace
@@ -19,6 +20,17 @@ linters-settings:
   gocritic:
     disabled-checks:
       - singleCaseSwitch
+<<<<<<< HEAD
+=======
+  gci:
+    local-prefixes: github.com/kumahq/kuma
+  importas:
+    alias:
+    - pkg: github.com/kumahq/kuma/pkg/core/resources/apis/mesh
+      alias: core_mesh
+    - pkg: github.com/kumahq/kuma/api/mesh/v1alpha1
+      alias: mesh_proto
+>>>>>>> 2e3ace03 (add importas to golangci-lint (#2516))
 
 issues:
   exclude-rules:

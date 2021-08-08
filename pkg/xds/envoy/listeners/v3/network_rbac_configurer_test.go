@@ -10,8 +10,13 @@ import (
 	. "github.com/kumahq/kuma/pkg/xds/envoy/listeners"
 
 	mesh_proto "github.com/kumahq/kuma/api/mesh/v1alpha1"
+<<<<<<< HEAD
 	mesh_core "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
 
+=======
+	core_mesh "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
+	"github.com/kumahq/kuma/pkg/core/xds"
+>>>>>>> 2e3ace03 (add importas to golangci-lint (#2516))
 	test_model "github.com/kumahq/kuma/pkg/test/resources/model"
 	util_proto "github.com/kumahq/kuma/pkg/util/proto"
 	envoy_common "github.com/kumahq/kuma/pkg/xds/envoy"
@@ -27,7 +32,7 @@ var _ = Describe("NetworkRbacConfigurer", func() {
 		statsName        string
 		clusters         []envoy_common.Cluster
 		rbacEnabled      bool
-		permission       *mesh_core.TrafficPermissionResource
+		permission       *core_mesh.TrafficPermissionResource
 		expected         string
 	}
 
@@ -59,7 +64,7 @@ var _ = Describe("NetworkRbacConfigurer", func() {
 				envoy_common.WithWeight(200),
 			)},
 			rbacEnabled: true,
-			permission: &mesh_core.TrafficPermissionResource{
+			permission: &core_mesh.TrafficPermissionResource{
 				Meta: &test_model.ResourceMeta{
 					Name: "tp-1",
 					Mesh: "default",
@@ -127,7 +132,7 @@ var _ = Describe("NetworkRbacConfigurer", func() {
 				envoy_common.WithWeight(200),
 			)},
 			rbacEnabled: false,
-			permission: &mesh_core.TrafficPermissionResource{
+			permission: &core_mesh.TrafficPermissionResource{
 				Meta: &test_model.ResourceMeta{
 					Name: "tp-1",
 					Mesh: "default",

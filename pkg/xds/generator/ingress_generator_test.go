@@ -11,7 +11,7 @@ import (
 	envoy_common "github.com/kumahq/kuma/pkg/xds/envoy"
 
 	mesh_proto "github.com/kumahq/kuma/api/mesh/v1alpha1"
-	mesh_core "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
+	core_mesh "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
 	core_xds "github.com/kumahq/kuma/pkg/core/xds"
 	. "github.com/kumahq/kuma/pkg/test/matchers"
 	test_model "github.com/kumahq/kuma/pkg/test/resources/model"
@@ -25,7 +25,7 @@ var _ = Describe("IngressGenerator", func() {
 		dataplane       string
 		expected        string
 		outboundTargets core_xds.EndpointMap
-		trafficRoutes   *mesh_core.TrafficRouteResourceList
+		trafficRoutes   *core_mesh.TrafficRouteResourceList
 	}
 
 	DescribeTable("should generate Envoy xDS resources",
@@ -35,7 +35,7 @@ var _ = Describe("IngressGenerator", func() {
 			dataplane := &mesh_proto.Dataplane{}
 			Expect(util_proto.FromYAML([]byte(given.dataplane), dataplane)).To(Succeed())
 
-			zoneIngress, err := mesh_core.NewZoneIngressResourceFromDataplane(&mesh_core.DataplaneResource{
+			zoneIngress, err := core_mesh.NewZoneIngressResourceFromDataplane(&core_mesh.DataplaneResource{
 				Meta: &test_model.ResourceMeta{
 					Version: "1",
 				},
@@ -115,8 +115,8 @@ var _ = Describe("IngressGenerator", func() {
 					},
 				},
 			},
-			trafficRoutes: &mesh_core.TrafficRouteResourceList{
-				Items: []*mesh_core.TrafficRouteResource{
+			trafficRoutes: &core_mesh.TrafficRouteResourceList{
+				Items: []*core_mesh.TrafficRouteResource{
 					{
 						Spec: &mesh_proto.TrafficRoute{
 							Sources: []*mesh_proto.Selector{{
@@ -143,8 +143,8 @@ var _ = Describe("IngressGenerator", func() {
 `,
 			expected:        "02.envoy.golden.yaml",
 			outboundTargets: map[core_xds.ServiceName][]core_xds.Endpoint{},
-			trafficRoutes: &mesh_core.TrafficRouteResourceList{
-				Items: []*mesh_core.TrafficRouteResource{
+			trafficRoutes: &core_mesh.TrafficRouteResourceList{
+				Items: []*core_mesh.TrafficRouteResource{
 					{
 						Spec: &mesh_proto.TrafficRoute{
 							Sources: []*mesh_proto.Selector{{
@@ -207,8 +207,8 @@ var _ = Describe("IngressGenerator", func() {
 					},
 				},
 			},
-			trafficRoutes: &mesh_core.TrafficRouteResourceList{
-				Items: []*mesh_core.TrafficRouteResource{
+			trafficRoutes: &core_mesh.TrafficRouteResourceList{
+				Items: []*core_mesh.TrafficRouteResource{
 					{
 						Spec: &mesh_proto.TrafficRoute{
 							Sources: []*mesh_proto.Selector{{
@@ -363,8 +363,8 @@ var _ = Describe("IngressGenerator", func() {
 					},
 				},
 			},
-			trafficRoutes: &mesh_core.TrafficRouteResourceList{
-				Items: []*mesh_core.TrafficRouteResource{
+			trafficRoutes: &core_mesh.TrafficRouteResourceList{
+				Items: []*core_mesh.TrafficRouteResource{
 					{
 						Spec: &mesh_proto.TrafficRoute{
 							Sources: []*mesh_proto.Selector{{
@@ -485,8 +485,8 @@ var _ = Describe("IngressGenerator", func() {
 			outboundTargets: map[core_xds.ServiceName][]core_xds.Endpoint{
 				"backend": {},
 			},
-			trafficRoutes: &mesh_core.TrafficRouteResourceList{
-				Items: []*mesh_core.TrafficRouteResource{
+			trafficRoutes: &core_mesh.TrafficRouteResourceList{
+				Items: []*core_mesh.TrafficRouteResource{
 					{
 						Spec: &mesh_proto.TrafficRoute{
 							Sources: []*mesh_proto.Selector{{

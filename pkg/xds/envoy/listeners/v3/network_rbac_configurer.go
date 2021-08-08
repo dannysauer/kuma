@@ -10,14 +10,14 @@ import (
 	rbac "github.com/envoyproxy/go-control-plane/envoy/extensions/filters/network/rbac/v3"
 
 	mesh_proto "github.com/kumahq/kuma/api/mesh/v1alpha1"
-	mesh_core "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
+	core_mesh "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
 	"github.com/kumahq/kuma/pkg/util/proto"
 	util_xds "github.com/kumahq/kuma/pkg/util/xds"
 )
 
 type NetworkRBACConfigurer struct {
 	StatsName  string
-	Permission *mesh_core.TrafficPermissionResource
+	Permission *core_mesh.TrafficPermissionResource
 }
 
 func (c *NetworkRBACConfigurer) Configure(filterChain *envoy_listener.FilterChain) error {
@@ -31,7 +31,7 @@ func (c *NetworkRBACConfigurer) Configure(filterChain *envoy_listener.FilterChai
 	return nil
 }
 
-func createRbacFilter(statsName string, permission *mesh_core.TrafficPermissionResource) (*envoy_listener.Filter, error) {
+func createRbacFilter(statsName string, permission *core_mesh.TrafficPermissionResource) (*envoy_listener.Filter, error) {
 	rbacRule := createRbacRule(statsName, permission)
 	rbacMarshalled, err := proto.MarshalAnyDeterministic(rbacRule)
 	if err != nil {
@@ -45,7 +45,7 @@ func createRbacFilter(statsName string, permission *mesh_core.TrafficPermissionR
 	}, nil
 }
 
-func createRbacRule(statsName string, permission *mesh_core.TrafficPermissionResource) *rbac.RBAC {
+func createRbacRule(statsName string, permission *core_mesh.TrafficPermissionResource) *rbac.RBAC {
 	policies := make(map[string]*rbac_config.Policy)
 	// We only create policy if Traffic Permission is selected. Otherwise we still need to build RBAC filter
 	// to restrict all the traffic coming to the dataplane.
@@ -62,7 +62,7 @@ func createRbacRule(statsName string, permission *mesh_core.TrafficPermissionRes
 	}
 }
 
-func createPolicy(permission *mesh_core.TrafficPermissionResource) *rbac_config.Policy {
+func createPolicy(permission *core_mesh.TrafficPermissionResource) *rbac_config.Policy {
 	principals := []*rbac_config.Principal{}
 
 	// build principals list: one per sources/destinations rule

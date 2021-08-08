@@ -23,7 +23,7 @@ import (
 	"github.com/kumahq/kuma/pkg/core"
 	managers_mesh "github.com/kumahq/kuma/pkg/core/managers/apis/mesh"
 	core_plugins "github.com/kumahq/kuma/pkg/core/plugins"
-	mesh_core "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
+	core_mesh "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
 	core_model "github.com/kumahq/kuma/pkg/core/resources/model"
 	core_registry "github.com/kumahq/kuma/pkg/core/resources/registry"
 	core_runtime "github.com/kumahq/kuma/pkg/core/runtime"
@@ -212,7 +212,7 @@ func addDefaulters(mgr kube_ctrl.Manager, converter k8s_common.Converter) error 
 
 	addDefaulter(mgr, mesh_k8s.GroupVersion.WithKind("Mesh"),
 		func() core_model.Resource {
-			return mesh_core.NewMeshResource()
+			return core_mesh.NewMeshResource()
 		}, converter)
 
 	return nil

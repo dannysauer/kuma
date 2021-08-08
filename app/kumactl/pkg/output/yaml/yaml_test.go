@@ -12,9 +12,13 @@ import (
 
 	"github.com/kumahq/kuma/app/kumactl/pkg/output"
 	"github.com/kumahq/kuma/app/kumactl/pkg/output/yaml"
+<<<<<<< HEAD
 
 	mesh_proto "github.com/kumahq/kuma/api/mesh/v1alpha1"
 	mesh_core "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
+=======
+	core_mesh "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
+>>>>>>> 2e3ace03 (add importas to golangci-lint (#2516))
 	core_rest "github.com/kumahq/kuma/pkg/core/resources/model/rest"
 )
 
@@ -56,7 +60,7 @@ var _ = Describe("printer", func() {
 		Entry("format response from Kuma REST API", testCase{
 			obj: &core_rest.Resource{
 				Meta: core_rest.ResourceMeta{
-					Type:             string(mesh_core.MeshType),
+					Type:             string(core_mesh.MeshType),
 					Name:             "demo",
 					CreationTime:     t1,
 					ModificationTime: t2,

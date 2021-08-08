@@ -8,7 +8,7 @@ import (
 	. "github.com/onsi/gomega"
 
 	mesh_proto "github.com/kumahq/kuma/api/mesh/v1alpha1"
-	mesh_core "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
+	core_mesh "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
 	model "github.com/kumahq/kuma/pkg/core/xds"
 	. "github.com/kumahq/kuma/pkg/test/matchers"
 	util_proto "github.com/kumahq/kuma/pkg/util/proto"
@@ -32,7 +32,7 @@ var _ = Describe("TransparentProxyGenerator", func() {
 			gen := &generator.TransparentProxyGenerator{}
 			ctx := xds_context.Context{
 				Mesh: xds_context.MeshContext{
-					Resource: &mesh_core.MeshResource{
+					Resource: &core_mesh.MeshResource{
 						Meta: &test_model.ResourceMeta{
 							Name: "default",
 						},
@@ -58,7 +58,7 @@ var _ = Describe("TransparentProxyGenerator", func() {
 		Entry("transparent_proxying=false", testCase{
 			proxy: &model.Proxy{
 				Id: *model.BuildProxyId("", "side-car"),
-				Dataplane: &mesh_core.DataplaneResource{
+				Dataplane: &core_mesh.DataplaneResource{
 					Meta: &test_model.ResourceMeta{
 						Version: "v1",
 					},
@@ -70,7 +70,7 @@ var _ = Describe("TransparentProxyGenerator", func() {
 		Entry("transparent_proxying=true", testCase{
 			proxy: &model.Proxy{
 				Id: *model.BuildProxyId("", "side-car"),
-				Dataplane: &mesh_core.DataplaneResource{
+				Dataplane: &core_mesh.DataplaneResource{
 					Meta: &test_model.ResourceMeta{
 						Version: "v1",
 					},
@@ -101,7 +101,7 @@ var _ = Describe("TransparentProxyGenerator", func() {
 		Entry("transparent_proxying=true with logs", testCase{
 			proxy: &model.Proxy{
 				Id: *model.BuildProxyId("", "side-car"),
-				Dataplane: &mesh_core.DataplaneResource{
+				Dataplane: &core_mesh.DataplaneResource{
 					Meta: &test_model.ResourceMeta{
 						Version: "v1",
 					},
@@ -132,7 +132,7 @@ var _ = Describe("TransparentProxyGenerator", func() {
 		Entry("transparent_proxying=true ipv6", testCase{
 			proxy: &model.Proxy{
 				Id: *model.BuildProxyId("", "side-car"),
-				Dataplane: &mesh_core.DataplaneResource{
+				Dataplane: &core_mesh.DataplaneResource{
 					Meta: &test_model.ResourceMeta{
 						Version: "v1",
 					},

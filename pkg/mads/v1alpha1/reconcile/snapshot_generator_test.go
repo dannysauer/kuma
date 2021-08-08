@@ -12,7 +12,12 @@ import (
 	envoy_types "github.com/envoyproxy/go-control-plane/pkg/cache/types"
 
 	mesh_proto "github.com/kumahq/kuma/api/mesh/v1alpha1"
+<<<<<<< HEAD
 	mesh_core "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
+=======
+	observability_proto "github.com/kumahq/kuma/api/observability/v1alpha1"
+	core_mesh "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
+>>>>>>> 2e3ace03 (add importas to golangci-lint (#2516))
 	core_manager "github.com/kumahq/kuma/pkg/core/resources/manager"
 	core_model "github.com/kumahq/kuma/pkg/core/resources/model"
 	core_store "github.com/kumahq/kuma/pkg/core/resources/store"
@@ -40,8 +45,8 @@ var _ = Describe("snapshotGenerator", func() {
 		})
 
 		type testCase struct {
-			meshes     []*mesh_core.MeshResource
-			dataplanes []*mesh_core.DataplaneResource
+			meshes     []*core_mesh.MeshResource
+			dataplanes []*core_mesh.DataplaneResource
 			expected   *mads_cache.Snapshot
 		}
 
@@ -75,7 +80,7 @@ var _ = Describe("snapshotGenerator", func() {
 				expected: mads_cache.NewSnapshot("", nil),
 			}),
 			Entry("no Meshes with Prometheus enabled", testCase{
-				meshes: []*mesh_core.MeshResource{
+				meshes: []*core_mesh.MeshResource{
 					{
 						Meta: &test_model.ResourceMeta{
 							Name: "default",
@@ -83,7 +88,7 @@ var _ = Describe("snapshotGenerator", func() {
 						Spec: &mesh_proto.Mesh{},
 					},
 				},
-				dataplanes: []*mesh_core.DataplaneResource{
+				dataplanes: []*core_mesh.DataplaneResource{
 					{
 						Meta: &test_model.ResourceMeta{
 							Name: "backend-01",
@@ -106,7 +111,7 @@ var _ = Describe("snapshotGenerator", func() {
 				expected: mads_cache.NewSnapshot("", nil),
 			}),
 			Entry("Mesh with Prometheus enabled but no Dataplanes", testCase{
-				meshes: []*mesh_core.MeshResource{
+				meshes: []*core_mesh.MeshResource{
 					{
 						Meta: &test_model.ResourceMeta{
 							Name: "default",
@@ -134,7 +139,7 @@ var _ = Describe("snapshotGenerator", func() {
 						},
 					},
 				},
-				dataplanes: []*mesh_core.DataplaneResource{
+				dataplanes: []*core_mesh.DataplaneResource{
 					{
 						Meta: &test_model.ResourceMeta{
 							Name: "backend-01",
@@ -157,7 +162,7 @@ var _ = Describe("snapshotGenerator", func() {
 				expected: mads_cache.NewSnapshot("", nil),
 			}),
 			Entry("Mesh with Prometheus enabled and some Dataplanes", testCase{
-				meshes: []*mesh_core.MeshResource{
+				meshes: []*core_mesh.MeshResource{
 					{
 						Meta: &test_model.ResourceMeta{
 							Name: "default",
@@ -185,7 +190,7 @@ var _ = Describe("snapshotGenerator", func() {
 						},
 					},
 				},
-				dataplanes: []*mesh_core.DataplaneResource{
+				dataplanes: []*core_mesh.DataplaneResource{
 					{
 						Meta: &test_model.ResourceMeta{
 							Name: "backend-01",

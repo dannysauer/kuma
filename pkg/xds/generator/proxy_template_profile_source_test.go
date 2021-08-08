@@ -13,7 +13,7 @@ import (
 	. "github.com/onsi/gomega"
 
 	mesh_proto "github.com/kumahq/kuma/api/mesh/v1alpha1"
-	mesh_core "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
+	core_mesh "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
 	model "github.com/kumahq/kuma/pkg/core/xds"
 	. "github.com/kumahq/kuma/pkg/test/matchers"
 	test_model "github.com/kumahq/kuma/pkg/test/resources/model"
@@ -84,7 +84,7 @@ var _ = Describe("ProxyTemplateProfileSource", func() {
 					CLACache: &dummyCLACache{outboundTargets: outboundTargets},
 				},
 				Mesh: xds_context.MeshContext{
-					Resource: &mesh_core.MeshResource{
+					Resource: &core_mesh.MeshResource{
 						Meta: &test_model.ResourceMeta{
 							Name: "demo",
 						},
@@ -101,7 +101,7 @@ var _ = Describe("ProxyTemplateProfileSource", func() {
 
 			proxy := &model.Proxy{
 				Id: *model.BuildProxyId("", "demo.backend-01"),
-				Dataplane: &mesh_core.DataplaneResource{
+				Dataplane: &core_mesh.DataplaneResource{
 					Meta: &test_model.ResourceMeta{
 						Name:    "backend-01",
 						Mesh:    "demo",
@@ -115,7 +115,7 @@ var _ = Describe("ProxyTemplateProfileSource", func() {
 						mesh_proto.OutboundInterface{
 							DataplaneIP:   "127.0.0.1",
 							DataplanePort: 54321,
-						}: &mesh_core.TrafficRouteResource{
+						}: &core_mesh.TrafficRouteResource{
 							Spec: &mesh_proto.TrafficRoute{
 								Conf: &mesh_proto.TrafficRoute_Conf{
 									Destination: mesh_proto.MatchService("db"),
@@ -125,7 +125,7 @@ var _ = Describe("ProxyTemplateProfileSource", func() {
 						mesh_proto.OutboundInterface{
 							DataplaneIP:   "127.0.0.1",
 							DataplanePort: 59200,
-						}: &mesh_core.TrafficRouteResource{
+						}: &core_mesh.TrafficRouteResource{
 							Spec: &mesh_proto.TrafficRoute{
 								Conf: &mesh_proto.TrafficRoute_Conf{
 									Destination: mesh_proto.MatchService("elastic"),
@@ -137,7 +137,7 @@ var _ = Describe("ProxyTemplateProfileSource", func() {
 				},
 				Policies: model.MatchedPolicies{
 					HealthChecks: model.HealthCheckMap{
-						"elastic": &mesh_core.HealthCheckResource{
+						"elastic": &core_mesh.HealthCheckResource{
 							Spec: &mesh_proto.HealthCheck{
 								Sources: []*mesh_proto.Selector{
 									{Match: mesh_proto.TagSelector{"kuma.io/service": "*"}},
@@ -205,7 +205,7 @@ var _ = Describe("ProxyTemplateProfileSource", func() {
               - port: 59200
                 service: elastic
 `,
-			profile:  mesh_core.ProfileDefaultProxy,
+			profile:  core_mesh.ProfileDefaultProxy,
 			expected: "1-envoy-config.golden.yaml",
 		}),
 		Entry("should support pre-defined `default-proxy` profile; transparent_proxying=true", testCase{
@@ -233,7 +233,7 @@ var _ = Describe("ProxyTemplateProfileSource", func() {
                 redirectPortOutbound: 15001
                 redirectPortInbound: 15006
 `,
-			profile:  mesh_core.ProfileDefaultProxy,
+			profile:  core_mesh.ProfileDefaultProxy,
 			expected: "2-envoy-config.golden.yaml",
 		}),
 		Entry("should support pre-defined `default-proxy` profile; transparent_proxying=false; prometheus_metrics=true", testCase{
@@ -268,7 +268,7 @@ var _ = Describe("ProxyTemplateProfileSource", func() {
               - port: 59200
                 service: elastic
 `,
-			profile:  mesh_core.ProfileDefaultProxy,
+			profile:  core_mesh.ProfileDefaultProxy,
 			expected: "3-envoy-config.golden.yaml",
 		}),
 		Entry("should support pre-defined `default-proxy` profile; transparent_proxying=true; prometheus_metrics=true", testCase{
@@ -306,7 +306,7 @@ var _ = Describe("ProxyTemplateProfileSource", func() {
                 redirectPortOutbound: 15001
                 redirectPortInbound: 15006
 `,
-			profile:  mesh_core.ProfileDefaultProxy,
+			profile:  core_mesh.ProfileDefaultProxy,
 			expected: "4-envoy-config.golden.yaml",
 		}),
 	)

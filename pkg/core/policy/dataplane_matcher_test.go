@@ -10,7 +10,7 @@ import (
 
 	mesh_proto "github.com/kumahq/kuma/api/mesh/v1alpha1"
 	"github.com/kumahq/kuma/pkg/core/policy"
-	mesh_core "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
+	core_mesh "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
 	model "github.com/kumahq/kuma/pkg/core/xds"
 
 	test_model "github.com/kumahq/kuma/pkg/test/resources/model"
@@ -34,13 +34,13 @@ var _ = Describe("Dataplane matcher", func() {
 			},
 			Entry("DataplanePolicy in the same mesh", testCase{
 				input: []policy.DataplanePolicy{
-					&mesh_core.ProxyTemplateResource{
+					&core_mesh.ProxyTemplateResource{
 						Meta: &test_model.ResourceMeta{
 							Mesh: "demo",
 							Name: "last",
 						},
 					},
-					&mesh_core.ProxyTemplateResource{
+					&core_mesh.ProxyTemplateResource{
 						Meta: &test_model.ResourceMeta{
 							Mesh: "demo",
 							Name: "first",
@@ -48,13 +48,13 @@ var _ = Describe("Dataplane matcher", func() {
 					},
 				},
 				expected: []policy.DataplanePolicy{
-					&mesh_core.ProxyTemplateResource{
+					&core_mesh.ProxyTemplateResource{
 						Meta: &test_model.ResourceMeta{
 							Mesh: "demo",
 							Name: "first",
 						},
 					},
-					&mesh_core.ProxyTemplateResource{
+					&core_mesh.ProxyTemplateResource{
 						Meta: &test_model.ResourceMeta{
 							Mesh: "demo",
 							Name: "last",
@@ -85,14 +85,14 @@ var _ = Describe("Dataplane matcher", func() {
 				}
 			},
 			Entry("there are no policies", testCase{
-				proxy:    &model.Proxy{Dataplane: mesh_core.NewDataplaneResource()},
+				proxy:    &model.Proxy{Dataplane: core_mesh.NewDataplaneResource()},
 				policies: nil,
 				expected: nil,
 			}),
 			Entry("policies have no selectors (latest should be selected)", testCase{
-				proxy: &model.Proxy{Dataplane: mesh_core.NewDataplaneResource()},
+				proxy: &model.Proxy{Dataplane: core_mesh.NewDataplaneResource()},
 				policies: []policy.DataplanePolicy{
-					&mesh_core.ProxyTemplateResource{
+					&core_mesh.ProxyTemplateResource{
 						Meta: &test_model.ResourceMeta{
 							Mesh:         "demo",
 							Name:         "b",
@@ -100,7 +100,7 @@ var _ = Describe("Dataplane matcher", func() {
 						},
 						Spec: &mesh_proto.ProxyTemplate{},
 					},
-					&mesh_core.ProxyTemplateResource{
+					&core_mesh.ProxyTemplateResource{
 						Meta: &test_model.ResourceMeta{
 							Mesh:         "demo",
 							Name:         "a",
@@ -109,7 +109,7 @@ var _ = Describe("Dataplane matcher", func() {
 						Spec: &mesh_proto.ProxyTemplate{},
 					},
 				},
-				expected: &mesh_core.ProxyTemplateResource{
+				expected: &core_mesh.ProxyTemplateResource{
 					Meta: &test_model.ResourceMeta{
 						Mesh:         "demo",
 						Name:         "b",
@@ -119,9 +119,9 @@ var _ = Describe("Dataplane matcher", func() {
 				},
 			}),
 			Entry("policies have empty selectors (latest should be selected)", testCase{
-				proxy: &model.Proxy{Dataplane: mesh_core.NewDataplaneResource()},
+				proxy: &model.Proxy{Dataplane: core_mesh.NewDataplaneResource()},
 				policies: []policy.DataplanePolicy{
-					&mesh_core.ProxyTemplateResource{
+					&core_mesh.ProxyTemplateResource{
 						Meta: &test_model.ResourceMeta{
 							Mesh:         "demo",
 							Name:         "b",
@@ -133,7 +133,7 @@ var _ = Describe("Dataplane matcher", func() {
 							},
 						},
 					},
-					&mesh_core.ProxyTemplateResource{
+					&core_mesh.ProxyTemplateResource{
 						Meta: &test_model.ResourceMeta{
 							Mesh:         "demo",
 							Name:         "a",
@@ -146,7 +146,7 @@ var _ = Describe("Dataplane matcher", func() {
 						},
 					},
 				},
-				expected: &mesh_core.ProxyTemplateResource{
+				expected: &core_mesh.ProxyTemplateResource{
 					Meta: &test_model.ResourceMeta{
 						Mesh:         "demo",
 						Name:         "b",
@@ -160,7 +160,7 @@ var _ = Describe("Dataplane matcher", func() {
 				},
 			}),
 			Entry("policies have non-empty selectors (the one with the highest number of matching key-value pairs should become the best match)", testCase{
-				proxy: &model.Proxy{Dataplane: &mesh_core.DataplaneResource{
+				proxy: &model.Proxy{Dataplane: &core_mesh.DataplaneResource{
 					Spec: &mesh_proto.Dataplane{
 						Networking: &mesh_proto.Dataplane_Networking{
 							Inbound: []*mesh_proto.Dataplane_Networking_Inbound{
@@ -181,7 +181,7 @@ var _ = Describe("Dataplane matcher", func() {
 					},
 				}},
 				policies: []policy.DataplanePolicy{
-					&mesh_core.ProxyTemplateResource{
+					&core_mesh.ProxyTemplateResource{
 						Meta: &test_model.ResourceMeta{
 							Mesh: "demo",
 							Name: "last",
@@ -197,7 +197,7 @@ var _ = Describe("Dataplane matcher", func() {
 							},
 						},
 					},
-					&mesh_core.ProxyTemplateResource{
+					&core_mesh.ProxyTemplateResource{
 						Meta: &test_model.ResourceMeta{
 							Mesh: "demo",
 							Name: "first",
@@ -220,7 +220,7 @@ var _ = Describe("Dataplane matcher", func() {
 						},
 					},
 				},
-				expected: &mesh_core.ProxyTemplateResource{
+				expected: &core_mesh.ProxyTemplateResource{
 					Meta: &test_model.ResourceMeta{
 						Mesh: "demo",
 						Name: "first",
@@ -244,7 +244,7 @@ var _ = Describe("Dataplane matcher", func() {
 				},
 			}),
 			Entry("two policies with the same rank (latest should be picked)", testCase{
-				proxy: &model.Proxy{Dataplane: &mesh_core.DataplaneResource{
+				proxy: &model.Proxy{Dataplane: &core_mesh.DataplaneResource{
 					Spec: &mesh_proto.Dataplane{
 						Networking: &mesh_proto.Dataplane_Networking{
 							Inbound: []*mesh_proto.Dataplane_Networking_Inbound{
@@ -260,7 +260,7 @@ var _ = Describe("Dataplane matcher", func() {
 					},
 				}},
 				policies: []policy.DataplanePolicy{
-					&mesh_core.ProxyTemplateResource{
+					&core_mesh.ProxyTemplateResource{
 						Meta: &test_model.ResourceMeta{
 							Mesh:         "demo",
 							Name:         "b",
@@ -276,7 +276,7 @@ var _ = Describe("Dataplane matcher", func() {
 							},
 						},
 					},
-					&mesh_core.ProxyTemplateResource{
+					&core_mesh.ProxyTemplateResource{
 						Meta: &test_model.ResourceMeta{
 							Mesh:         "demo",
 							Name:         "a",
@@ -293,7 +293,7 @@ var _ = Describe("Dataplane matcher", func() {
 						},
 					},
 				},
-				expected: &mesh_core.ProxyTemplateResource{
+				expected: &core_mesh.ProxyTemplateResource{
 					Meta: &test_model.ResourceMeta{
 						Mesh:         "demo",
 						Name:         "b",
@@ -311,7 +311,7 @@ var _ = Describe("Dataplane matcher", func() {
 				},
 			}),
 			Entry("gateway dataplane matches policies", testCase{
-				proxy: &model.Proxy{Dataplane: &mesh_core.DataplaneResource{
+				proxy: &model.Proxy{Dataplane: &core_mesh.DataplaneResource{
 					Spec: &mesh_proto.Dataplane{
 						Networking: &mesh_proto.Dataplane_Networking{
 							Gateway: &mesh_proto.Dataplane_Networking_Gateway{
@@ -325,7 +325,7 @@ var _ = Describe("Dataplane matcher", func() {
 					},
 				}},
 				policies: []policy.DataplanePolicy{
-					&mesh_core.ProxyTemplateResource{
+					&core_mesh.ProxyTemplateResource{
 						Meta: &test_model.ResourceMeta{
 							Mesh:         "demo",
 							Name:         "first",
@@ -342,7 +342,7 @@ var _ = Describe("Dataplane matcher", func() {
 						},
 					},
 				},
-				expected: &mesh_core.ProxyTemplateResource{
+				expected: &core_mesh.ProxyTemplateResource{
 					Meta: &test_model.ResourceMeta{
 						Mesh:         "demo",
 						Name:         "first",
@@ -360,9 +360,9 @@ var _ = Describe("Dataplane matcher", func() {
 				},
 			}),
 			Entry("none of policies have matching selectors", testCase{
-				proxy: &model.Proxy{Dataplane: mesh_core.NewDataplaneResource()},
+				proxy: &model.Proxy{Dataplane: core_mesh.NewDataplaneResource()},
 				policies: []policy.DataplanePolicy{
-					&mesh_core.ProxyTemplateResource{
+					&core_mesh.ProxyTemplateResource{
 						Meta: &test_model.ResourceMeta{
 							Mesh: "demo",
 							Name: "last",

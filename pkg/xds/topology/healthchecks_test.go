@@ -14,7 +14,7 @@ import (
 	. "github.com/kumahq/kuma/pkg/xds/topology"
 
 	mesh_proto "github.com/kumahq/kuma/api/mesh/v1alpha1"
-	mesh_core "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
+	core_mesh "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
 	core_manager "github.com/kumahq/kuma/pkg/core/resources/manager"
 	core_model "github.com/kumahq/kuma/pkg/core/resources/model"
 	core_store "github.com/kumahq/kuma/pkg/core/resources/store"
@@ -37,19 +37,19 @@ var _ = Describe("HealthCheck", func() {
 
 		It("should pick the best matching HealthCheck for each destination service", func() {
 			// given
-			mesh := &mesh_core.MeshResource{ // mesh that is relevant to this test case
+			mesh := &core_mesh.MeshResource{ // mesh that is relevant to this test case
 				Meta: &test_model.ResourceMeta{
 					Name: "demo",
 				},
 				Spec: &mesh_proto.Mesh{},
 			}
-			otherMesh := &mesh_core.MeshResource{ // mesh that is irrelevant to this test case
+			otherMesh := &core_mesh.MeshResource{ // mesh that is irrelevant to this test case
 				Meta: &test_model.ResourceMeta{
 					Name: "default",
 				},
 				Spec: &mesh_proto.Mesh{},
 			}
-			backend := &mesh_core.DataplaneResource{ // dataplane that is a source of traffic
+			backend := &core_mesh.DataplaneResource{ // dataplane that is a source of traffic
 				Meta: &test_model.ResourceMeta{
 					Mesh: "demo",
 					Name: "backend",
@@ -80,7 +80,7 @@ var _ = Describe("HealthCheck", func() {
 				"redis":   core_xds.TagSelectorSet{mesh_proto.MatchService("redis")},
 				"elastic": core_xds.TagSelectorSet{mesh_proto.MatchService("elastic")},
 			}
-			healthCheckRedis := &mesh_core.HealthCheckResource{ // health checks for `redis` service
+			healthCheckRedis := &core_mesh.HealthCheckResource{ // health checks for `redis` service
 				Meta: &test_model.ResourceMeta{
 					Mesh: "demo",
 					Name: "healthcheck-redis",
@@ -101,7 +101,7 @@ var _ = Describe("HealthCheck", func() {
 					},
 				},
 			}
-			healthCheckElastic := &mesh_core.HealthCheckResource{ // health checks for `elastic` service
+			healthCheckElastic := &core_mesh.HealthCheckResource{ // health checks for `elastic` service
 				Meta: &test_model.ResourceMeta{
 					Mesh: "demo",
 					Name: "healthcheck-elastic",
@@ -121,7 +121,7 @@ var _ = Describe("HealthCheck", func() {
 					},
 				},
 			}
-			healthCheckEverything := &mesh_core.HealthCheckResource{ // health checks for any service
+			healthCheckEverything := &core_mesh.HealthCheckResource{ // health checks for any service
 				Meta: &test_model.ResourceMeta{
 					Mesh: "default", // other mesh
 					Name: "healthcheck-everything",
@@ -173,9 +173,9 @@ var _ = Describe("HealthCheck", func() {
 				meta1.GetVersion() == meta2.GetVersion()
 		}
 		type testCase struct {
-			dataplane    *mesh_core.DataplaneResource
+			dataplane    *core_mesh.DataplaneResource
 			destinations core_xds.DestinationMap
-			healthChecks []*mesh_core.HealthCheckResource
+			healthChecks []*core_mesh.HealthCheckResource
 			expected     core_xds.HealthCheckMap
 		}
 		DescribeTable("should correctly pick a single the most specific HealthCheck for each outbound interface",
@@ -202,13 +202,13 @@ var _ = Describe("HealthCheck", func() {
 				Expect(healthChecks).Should(Equal(expectedHealthChecks))
 			},
 			Entry("Dataplane without outbound interfaces (and therefore no destinations)", testCase{
-				dataplane:    mesh_core.NewDataplaneResource(),
+				dataplane:    core_mesh.NewDataplaneResource(),
 				destinations: nil,
 				healthChecks: nil,
 				expected:     nil,
 			}),
 			Entry("if a destination service has no matching HealthChecks, none should be used", testCase{
-				dataplane: &mesh_core.DataplaneResource{
+				dataplane: &core_mesh.DataplaneResource{
 					Spec: &mesh_proto.Dataplane{
 						Networking: &mesh_proto.Dataplane_Networking{
 							Inbound: []*mesh_proto.Dataplane_Networking_Inbound{
@@ -229,7 +229,7 @@ var _ = Describe("HealthCheck", func() {
 				expected:     nil,
 			}),
 			Entry("due to TrafficRoutes, a Dataplane might have more destinations than outbound interfaces", testCase{
-				dataplane: &mesh_core.DataplaneResource{
+				dataplane: &core_mesh.DataplaneResource{
 					Spec: &mesh_proto.Dataplane{
 						Networking: &mesh_proto.Dataplane_Networking{
 							Inbound: []*mesh_proto.Dataplane_Networking_Inbound{
@@ -245,7 +245,7 @@ var _ = Describe("HealthCheck", func() {
 					"redis":   core_xds.TagSelectorSet{mesh_proto.MatchService("redis")},
 					"elastic": core_xds.TagSelectorSet{mesh_proto.MatchService("elastic")},
 				},
-				healthChecks: []*mesh_core.HealthCheckResource{
+				healthChecks: []*core_mesh.HealthCheckResource{
 					{
 						Meta: &test_model.ResourceMeta{
 							Name: "healthcheck-elastic",
@@ -286,12 +286,12 @@ var _ = Describe("HealthCheck", func() {
 					},
 				},
 				expected: core_xds.HealthCheckMap{
-					"redis": &mesh_core.HealthCheckResource{
+					"redis": &core_mesh.HealthCheckResource{
 						Meta: &test_model.ResourceMeta{
 							Name: "healthcheck-redis",
 						},
 					},
-					"elastic": &mesh_core.HealthCheckResource{
+					"elastic": &core_mesh.HealthCheckResource{
 						Meta: &test_model.ResourceMeta{
 							Name: "healthcheck-elastic",
 						},
@@ -299,7 +299,7 @@ var _ = Describe("HealthCheck", func() {
 				},
 			}),
 			Entry("HealthChecks should be picked by latest creation time given two equally specific HealthChecks", testCase{
-				dataplane: &mesh_core.DataplaneResource{
+				dataplane: &core_mesh.DataplaneResource{
 					Spec: &mesh_proto.Dataplane{
 						Networking: &mesh_proto.Dataplane_Networking{
 							Inbound: []*mesh_proto.Dataplane_Networking_Inbound{
@@ -314,7 +314,7 @@ var _ = Describe("HealthCheck", func() {
 				destinations: core_xds.DestinationMap{
 					"redis": core_xds.TagSelectorSet{mesh_proto.MatchService("redis")},
 				},
-				healthChecks: []*mesh_core.HealthCheckResource{
+				healthChecks: []*core_mesh.HealthCheckResource{
 					{
 						Meta: &test_model.ResourceMeta{
 							Name:         "healthcheck-everything-passive",
@@ -357,7 +357,7 @@ var _ = Describe("HealthCheck", func() {
 					},
 				},
 				expected: core_xds.HealthCheckMap{
-					"redis": &mesh_core.HealthCheckResource{
+					"redis": &core_mesh.HealthCheckResource{
 						Meta: &test_model.ResourceMeta{
 							Name: "healthcheck-everything-passive",
 						},
@@ -365,7 +365,7 @@ var _ = Describe("HealthCheck", func() {
 				},
 			}),
 			Entry("HealthCheck with a `source` selector by 2 tags should win over a HealthCheck with a `source` selector by 1 tag", testCase{
-				dataplane: &mesh_core.DataplaneResource{
+				dataplane: &core_mesh.DataplaneResource{
 					Spec: &mesh_proto.Dataplane{
 						Networking: &mesh_proto.Dataplane_Networking{
 							Inbound: []*mesh_proto.Dataplane_Networking_Inbound{
@@ -380,7 +380,7 @@ var _ = Describe("HealthCheck", func() {
 				destinations: core_xds.DestinationMap{
 					"redis": core_xds.TagSelectorSet{mesh_proto.MatchService("redis")},
 				},
-				healthChecks: []*mesh_core.HealthCheckResource{
+				healthChecks: []*core_mesh.HealthCheckResource{
 					{
 						Meta: &test_model.ResourceMeta{
 							Name: "less-specific",
@@ -421,7 +421,7 @@ var _ = Describe("HealthCheck", func() {
 					},
 				},
 				expected: core_xds.HealthCheckMap{
-					"redis": &mesh_core.HealthCheckResource{
+					"redis": &core_mesh.HealthCheckResource{
 						Meta: &test_model.ResourceMeta{
 							Name: "more-specific",
 						},
@@ -429,7 +429,7 @@ var _ = Describe("HealthCheck", func() {
 				},
 			}),
 			Entry("HealthCheck with a `source` selector by an exact value should win over a HealthCheck with a `source` selector by a wildcard value", testCase{
-				dataplane: &mesh_core.DataplaneResource{
+				dataplane: &core_mesh.DataplaneResource{
 					Spec: &mesh_proto.Dataplane{
 						Networking: &mesh_proto.Dataplane_Networking{
 							Inbound: []*mesh_proto.Dataplane_Networking_Inbound{
@@ -444,7 +444,7 @@ var _ = Describe("HealthCheck", func() {
 				destinations: core_xds.DestinationMap{
 					"redis": core_xds.TagSelectorSet{mesh_proto.MatchService("redis")},
 				},
-				healthChecks: []*mesh_core.HealthCheckResource{
+				healthChecks: []*core_mesh.HealthCheckResource{
 					{
 						Meta: &test_model.ResourceMeta{
 							Name: "less-specific",
@@ -485,7 +485,7 @@ var _ = Describe("HealthCheck", func() {
 					},
 				},
 				expected: core_xds.HealthCheckMap{
-					"redis": &mesh_core.HealthCheckResource{
+					"redis": &core_mesh.HealthCheckResource{
 						Meta: &test_model.ResourceMeta{
 							Name: "more-specific",
 						},
@@ -493,7 +493,7 @@ var _ = Describe("HealthCheck", func() {
 				},
 			}),
 			Entry("HealthCheck with a `destination` selector by an exact value should win over a HealthCheck with a `destination` selector by a wildcard value", testCase{
-				dataplane: &mesh_core.DataplaneResource{
+				dataplane: &core_mesh.DataplaneResource{
 					Spec: &mesh_proto.Dataplane{
 						Networking: &mesh_proto.Dataplane_Networking{
 							Inbound: []*mesh_proto.Dataplane_Networking_Inbound{
@@ -508,7 +508,7 @@ var _ = Describe("HealthCheck", func() {
 				destinations: core_xds.DestinationMap{
 					"redis": core_xds.TagSelectorSet{mesh_proto.MatchService("redis")},
 				},
-				healthChecks: []*mesh_core.HealthCheckResource{
+				healthChecks: []*core_mesh.HealthCheckResource{
 					{
 						Meta: &test_model.ResourceMeta{
 							Name: "less-specific",
@@ -549,7 +549,7 @@ var _ = Describe("HealthCheck", func() {
 					},
 				},
 				expected: core_xds.HealthCheckMap{
-					"redis": &mesh_core.HealthCheckResource{
+					"redis": &core_mesh.HealthCheckResource{
 						Meta: &test_model.ResourceMeta{
 							Name: "more-specific",
 						},
@@ -557,7 +557,7 @@ var _ = Describe("HealthCheck", func() {
 				},
 			}),
 			Entry("in case if HealthChecks have equal aggregate ranks, most specific one should be selected based on last creation time", testCase{
-				dataplane: &mesh_core.DataplaneResource{
+				dataplane: &core_mesh.DataplaneResource{
 					Spec: &mesh_proto.Dataplane{
 						Networking: &mesh_proto.Dataplane_Networking{
 							Inbound: []*mesh_proto.Dataplane_Networking_Inbound{
@@ -572,7 +572,7 @@ var _ = Describe("HealthCheck", func() {
 				destinations: core_xds.DestinationMap{
 					"redis": core_xds.TagSelectorSet{mesh_proto.MatchService("redis")},
 				},
-				healthChecks: []*mesh_core.HealthCheckResource{
+				healthChecks: []*core_mesh.HealthCheckResource{
 					{
 						Meta: &test_model.ResourceMeta{
 							Name:         "equally-specific-2",
@@ -615,7 +615,7 @@ var _ = Describe("HealthCheck", func() {
 					},
 				},
 				expected: core_xds.HealthCheckMap{
-					"redis": &mesh_core.HealthCheckResource{
+					"redis": &core_mesh.HealthCheckResource{
 						Meta: &test_model.ResourceMeta{
 							Name: "equally-specific-2",
 						},

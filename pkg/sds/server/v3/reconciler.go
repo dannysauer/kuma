@@ -21,8 +21,12 @@ import (
 	envoy_cache "github.com/envoyproxy/go-control-plane/pkg/cache/v3"
 
 	"github.com/kumahq/kuma/pkg/core"
+<<<<<<< HEAD
 	mesh_core "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
 	mesh_helper "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
+=======
+	core_mesh "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
+>>>>>>> 2e3ace03 (add importas to golangci-lint (#2516))
 	core_manager "github.com/kumahq/kuma/pkg/core/resources/manager"
 	core_model "github.com/kumahq/kuma/pkg/core/resources/model"
 	core_store "github.com/kumahq/kuma/pkg/core/resources/store"
@@ -60,7 +64,7 @@ type snapshotInfo struct {
 }
 
 func (d *DataplaneReconciler) Reconcile(proxyId *core_xds.ProxyId) error {
-	dataplane := mesh_core.NewDataplaneResource()
+	dataplane := core_mesh.NewDataplaneResource()
 	if err := d.readOnlyResManager.Get(context.Background(), dataplane, core_store.GetBy(proxyId.ToResourceKey())); err != nil {
 		if core_store.IsResourceNotFound(err) {
 			sdsServerLog.V(1).Info("Dataplane not found. Clearing the Snapshot.", "dataplaneId", proxyId.ToResourceKey())
@@ -72,7 +76,7 @@ func (d *DataplaneReconciler) Reconcile(proxyId *core_xds.ProxyId) error {
 		return err
 	}
 
-	mesh := mesh_core.NewMeshResource()
+	mesh := core_mesh.NewMeshResource()
 	if err := d.readOnlyResManager.Get(context.Background(), mesh, core_store.GetByKey(dataplane.GetMeta().GetMesh(), core_model.NoMesh)); err != nil {
 		return errors.Wrap(err, "could not retrieve a mesh")
 	}
@@ -119,7 +123,11 @@ func (d *DataplaneReconciler) Cleanup(proxyId *core_xds.ProxyId) error {
 	return nil
 }
 
+<<<<<<< HEAD
 func (d *DataplaneReconciler) shouldGenerateSnapshot(proxyID string, mesh *mesh_helper.MeshResource, dataplane *mesh_helper.DataplaneResource) (bool, string, error) {
+=======
+func (d *DataplaneReconciler) shouldGenerateSnapshot(proxyID string, mesh *core_mesh.MeshResource, dataplane *core_mesh.DataplaneResource) (bool, string, error) {
+>>>>>>> 2e3ace03 (add importas to golangci-lint (#2516))
 	_, err := d.cache.GetSnapshot(proxyID)
 	if err != nil {
 		return true, "Snapshot does not exist", nil
@@ -153,7 +161,7 @@ func (d *DataplaneReconciler) setSnapshotInfo(proxyID string, info snapshotInfo)
 	d.proxySnapshotInfo[proxyID] = info
 }
 
-func (d *DataplaneReconciler) generateSnapshot(dataplane *mesh_core.DataplaneResource, mesh *mesh_core.MeshResource) (envoy_cache.Snapshot, snapshotInfo, error) {
+func (d *DataplaneReconciler) generateSnapshot(dataplane *core_mesh.DataplaneResource, mesh *core_mesh.MeshResource) (envoy_cache.Snapshot, snapshotInfo, error) {
 	requestor := sds_identity.Identity{
 		Services: dataplane.Spec.TagSet(),
 		Mesh:     dataplane.GetMeta().GetMesh(),
@@ -192,8 +200,8 @@ func (d *DataplaneReconciler) generateSnapshot(dataplane *mesh_core.DataplaneRes
 }
 
 func (d *DataplaneReconciler) updateInsights(dataplaneId core_model.ResourceKey, info snapshotInfo) error {
-	return core_manager.Upsert(d.resManager, dataplaneId, mesh_core.NewDataplaneInsightResource(), func(resource core_model.Resource) {
-		insight := resource.(*mesh_core.DataplaneInsightResource)
+	return core_manager.Upsert(d.resManager, dataplaneId, core_mesh.NewDataplaneInsightResource(), func(resource core_model.Resource) {
+		insight := resource.(*core_mesh.DataplaneInsightResource)
 		if err := insight.Spec.UpdateCert(core.Now(), info.expiration); err != nil {
 			sdsServerLog.Error(err, "could not update the certificate", "dataplaneId", dataplaneId)
 		}

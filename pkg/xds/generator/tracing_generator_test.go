@@ -8,7 +8,7 @@ import (
 	. "github.com/onsi/gomega"
 
 	mesh_proto "github.com/kumahq/kuma/api/mesh/v1alpha1"
-	mesh_core "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
+	core_mesh "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
 	core_xds "github.com/kumahq/kuma/pkg/core/xds"
 	model "github.com/kumahq/kuma/pkg/core/xds"
 	. "github.com/kumahq/kuma/pkg/test/matchers"
@@ -40,9 +40,15 @@ var _ = Describe("TracingProxyGenerator", func() {
 			Expect(rs).To(BeNil())
 		},
 		Entry("Mesh has no Tracing configuration", testCase{
+<<<<<<< HEAD
 			proxy: &model.Proxy{
 				Id: *model.BuildProxyId("", "demo.backend-01"),
 				Dataplane: &mesh_core.DataplaneResource{
+=======
+			proxy: &core_xds.Proxy{
+				Id: *core_xds.BuildProxyId("", "demo.backend-01"),
+				Dataplane: &core_mesh.DataplaneResource{
+>>>>>>> 2e3ace03 (add importas to golangci-lint (#2516))
 					Meta: &test_model.ResourceMeta{
 						Name: "backend-01",
 						Mesh: "demo",
@@ -73,9 +79,15 @@ var _ = Describe("TracingProxyGenerator", func() {
 			Expect(actual).To(MatchGoldenYAML(filepath.Join("testdata", "tracing", given.expected)))
 		},
 		Entry("should create cluster for Zipkin", testCase{
+<<<<<<< HEAD
 			proxy: &model.Proxy{
 				Id: *model.BuildProxyId("", "demo.backend-01"),
 				Dataplane: &mesh_core.DataplaneResource{
+=======
+			proxy: &core_xds.Proxy{
+				Id: *core_xds.BuildProxyId("", "demo.backend-01"),
+				Dataplane: &core_mesh.DataplaneResource{
+>>>>>>> 2e3ace03 (add importas to golangci-lint (#2516))
 					Meta: &test_model.ResourceMeta{
 						Name: "backend-01",
 						Mesh: "demo",

@@ -6,7 +6,13 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
+<<<<<<< HEAD
 	mesh_core "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
+=======
+	config_proto "github.com/kumahq/kuma/api/system/v1alpha1"
+	core_mesh "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
+	"github.com/kumahq/kuma/pkg/core/resources/apis/system"
+>>>>>>> 2e3ace03 (add importas to golangci-lint (#2516))
 	"github.com/kumahq/kuma/pkg/core/resources/manager"
 	core_model "github.com/kumahq/kuma/pkg/core/resources/model"
 	"github.com/kumahq/kuma/pkg/dns/vips"
@@ -80,13 +86,13 @@ var _ = Describe("Meshed Persistence", func() {
 
 	BeforeEach(func() {
 		rm = manager.NewResourceManager(memory.NewStore())
-		err := rm.Create(context.Background(), mesh_core.NewMeshResource(), core_store.CreateByKey("mesh-1", core_model.NoMesh))
+		err := rm.Create(context.Background(), core_mesh.NewMeshResource(), core_store.CreateByKey("mesh-1", core_model.NoMesh))
 		Expect(err).ToNot(HaveOccurred())
 
-		err = rm.Create(context.Background(), mesh_core.NewMeshResource(), core_store.CreateByKey("mesh-2", core_model.NoMesh))
+		err = rm.Create(context.Background(), core_mesh.NewMeshResource(), core_store.CreateByKey("mesh-2", core_model.NoMesh))
 		Expect(err).ToNot(HaveOccurred())
 
-		err = rm.Create(context.Background(), mesh_core.NewMeshResource(), core_store.CreateByKey("mesh-3", core_model.NoMesh))
+		err = rm.Create(context.Background(), core_mesh.NewMeshResource(), core_store.CreateByKey("mesh-3", core_model.NoMesh))
 		Expect(err).ToNot(HaveOccurred())
 	})
 
