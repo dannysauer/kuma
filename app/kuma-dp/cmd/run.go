@@ -73,6 +73,14 @@ func newRunCmd(rootCtx *RootContext) *cobra.Command {
 			}
 
 			if proxyResource != nil {
+<<<<<<< HEAD
+=======
+				if resType := proxyTypeMap[cfg.Dataplane.ProxyType]; resType != proxyResource.Descriptor().Name {
+					return errors.Errorf("invalid proxy resource type %q, expected %s",
+						proxyResource.Descriptor().Name, resType)
+				}
+
+>>>>>>> 57212439 (chore(tools): Simplify resource-gen.go by generating`ResourceDescriptor` (#2511))
 				if cfg.Dataplane.Name != "" || cfg.Dataplane.Mesh != "" {
 					return errors.New("--name and --mesh cannot be specified when dataplane definition is provided, mesh and name will be read from the dataplane definition")
 				}

@@ -15,6 +15,7 @@ import (
 	core_mesh "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
 	"github.com/kumahq/kuma/pkg/core/resources/apis/system"
 	core_model "github.com/kumahq/kuma/pkg/core/resources/model"
+	"github.com/kumahq/kuma/pkg/core/resources/registry"
 	core_store "github.com/kumahq/kuma/pkg/core/resources/store"
 	util_files "github.com/kumahq/kuma/pkg/util/files"
 )
@@ -35,6 +36,7 @@ type RootRuntime struct {
 	NewDataplaneTokenClient      func(*config_proto.ControlPlaneCoordinates_ApiServer) (tokens.DataplaneTokenClient, error)
 	NewZoneIngressTokenClient    func(*config_proto.ControlPlaneCoordinates_ApiServer) (tokens.ZoneIngressTokenClient, error)
 	NewAPIServerClient           func(*config_proto.ControlPlaneCoordinates_ApiServer) (kumactl_resources.ApiServerClient, error)
+	Registry                     registry.TypeRegistry
 }
 
 // RootContext contains variables, functions and components that can be overridden when extending kumactl or running the test.
@@ -63,8 +65,11 @@ type RootContext struct {
 func DefaultRootContext() *RootContext {
 	return &RootContext{
 		Runtime: RootRuntime{
-			Now:                          time.Now,
-			NewResourceStore:             kumactl_resources.NewResourceStore,
+			Now:      time.Now,
+			Registry: registry.Global(),
+			NewResourceStore: func(server *config_proto.ControlPlaneCoordinates_ApiServer) (core_store.ResourceStore, error) {
+				return kumactl_resources.NewResourceStore(server, registry.Global().ObjectDescriptors())
+			},
 			NewDataplaneOverviewClient:   kumactl_resources.NewDataplaneOverviewClient,
 			NewZoneIngressOverviewClient: kumactl_resources.NewZoneIngressOverviewClient,
 			NewZoneOverviewClient:        kumactl_resources.NewZoneOverviewClient,

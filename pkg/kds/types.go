@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // Package kds provides support of Kuma Discovery Service, extension of xDS
 package kds
 
@@ -7,12 +8,17 @@ import (
 	"github.com/kumahq/kuma/pkg/core/resources/model"
 )
 
+=======
+package kds
+
+>>>>>>> 57212439 (chore(tools): Simplify resource-gen.go by generating`ResourceDescriptor` (#2511))
 const (
 	googleApis = "type.googleapis.com/"
 
 	// KumaResource is the type URL of the KumaResource protobuf.
 	KumaResource = googleApis + "kuma.mesh.v1alpha1.KumaResource"
 )
+<<<<<<< HEAD
 
 var (
 	// SupportedTypes is a list of Kuma types that may be exchanged by KDS peers.
@@ -39,3 +45,5 @@ var (
 		system.SecretType,
 	}
 )
+=======
+>>>>>>> 57212439 (chore(tools): Simplify resource-gen.go by generating`ResourceDescriptor` (#2511))

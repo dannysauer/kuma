@@ -2,6 +2,7 @@ package server_test
 
 import (
 	"context"
+	"reflect"
 	"sync"
 	"time"
 
@@ -24,7 +25,15 @@ import (
 	. "github.com/onsi/gomega"
 
 	"github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
+<<<<<<< HEAD
 	"github.com/kumahq/kuma/pkg/core/resources/store"
+=======
+	"github.com/kumahq/kuma/pkg/core/resources/apis/system"
+	"github.com/kumahq/kuma/pkg/core/resources/model"
+	"github.com/kumahq/kuma/pkg/core/resources/registry"
+	"github.com/kumahq/kuma/pkg/core/resources/store"
+	"github.com/kumahq/kuma/pkg/kds/reconcile"
+>>>>>>> 57212439 (chore(tools): Simplify resource-gen.go by generating`ResourceDescriptor` (#2511))
 	"github.com/kumahq/kuma/pkg/plugins/resources/memory"
 )
 
@@ -47,7 +56,11 @@ var _ = Describe("KDS Server", func() {
 
 		wg := &sync.WaitGroup{}
 		wg.Add(1)
+<<<<<<< HEAD
 		stream := kds_setup.StartServer(s, wg, "test-cluster", kds.SupportedTypes, reconcile.Any)
+=======
+		stream := kds_setup.StartServer(s, wg, "test-cluster", registry.Global().ObjectTypes(model.HasKdsEnabled()), reconcile.Any)
+>>>>>>> 57212439 (chore(tools): Simplify resource-gen.go by generating`ResourceDescriptor` (#2511))
 
 		tc = &kds_verifier.TestContextImpl{
 			ResourceStore:      s,
@@ -84,7 +97,17 @@ var _ = Describe("KDS Server", func() {
 			kds_samples.ZoneIngressInsight,
 			kds_samples.Config,
 		}).
+<<<<<<< HEAD
 			To(HaveLen(len(kds.SupportedTypes)))
+=======
+			To(WithTransform(func(messages []proto.Message) []string {
+				var res []string
+				for _, m := range messages {
+					res = append(res, reflect.TypeOf(m).String())
+				}
+				return res
+			}, HaveLen(len(registry.Global().ObjectTypes(model.HasKdsEnabled())))))
+>>>>>>> 57212439 (chore(tools): Simplify resource-gen.go by generating`ResourceDescriptor` (#2511))
 
 		vrf := kds_verifier.New().
 			// NOTE: The resources all have to be created before any DiscoveryRequests are made.

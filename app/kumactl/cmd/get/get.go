@@ -7,8 +7,12 @@ import (
 	kumactl_cmd "github.com/kumahq/kuma/app/kumactl/pkg/cmd"
 	"github.com/kumahq/kuma/app/kumactl/pkg/output"
 	kuma_cmd "github.com/kumahq/kuma/pkg/cmd"
+<<<<<<< HEAD
 	core_mesh "github.com/kumahq/kuma/pkg/core/resources/apis/mesh"
 	core_system "github.com/kumahq/kuma/pkg/core/resources/apis/system"
+=======
+	"github.com/kumahq/kuma/pkg/core/resources/model"
+>>>>>>> 57212439 (chore(tools): Simplify resource-gen.go by generating`ResourceDescriptor` (#2511))
 )
 
 func NewGetCmd(pctx *kumactl_cmd.RootContext) *cobra.Command {
@@ -19,6 +23,7 @@ func NewGetCmd(pctx *kumactl_cmd.RootContext) *cobra.Command {
 	}
 	// flags
 	cmd.PersistentFlags().StringVarP(&pctx.GetContext.Args.OutputFormat, "output", "o", string(output.TableFormat), kuma_cmd.UsageOptions("output format", output.TableFormat, output.YAMLFormat, output.JSONFormat))
+<<<<<<< HEAD
 	// sub-commands
 	cmd.AddCommand(WithPaginationArgs(NewGetResourcesCmd(pctx, "meshes", core_mesh.MeshType, printMeshes), &pctx.ListContext))
 	cmd.AddCommand(WithPaginationArgs(NewGetResourcesCmd(pctx, "dataplanes", core_mesh.DataplaneType, printDataplanes), &pctx.ListContext))
@@ -57,6 +62,12 @@ func NewGetCmd(pctx *kumactl_cmd.RootContext) *cobra.Command {
 	cmd.AddCommand(NewGetResourceCmd(pctx, "global-secret", core_system.GlobalSecretType, BasicGlobalResourceTablePrinter))
 	cmd.AddCommand(NewGetResourceCmd(pctx, "zone", core_system.ZoneType, printZones))
 	cmd.AddCommand(NewGetResourceCmd(pctx, "zone-ingress", core_mesh.ZoneIngressType, BasicGlobalResourceTablePrinter))
+=======
+	for _, cmdInst := range pctx.Runtime.Registry.ObjectDescriptors(model.HasKumactlEnabled()) {
+		cmd.AddCommand(WithPaginationArgs(NewGetResourcesCmd(pctx, cmdInst), &pctx.ListContext))
+		cmd.AddCommand(NewGetResourceCmd(pctx, cmdInst))
+	}
+>>>>>>> 57212439 (chore(tools): Simplify resource-gen.go by generating`ResourceDescriptor` (#2511))
 	return cmd
 }
 

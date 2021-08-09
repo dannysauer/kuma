@@ -50,10 +50,15 @@ func readResource(cmd *cobra.Command, cfg *kuma_dp.Config, typ core_model.Resour
 	if err != nil {
 		return nil, err
 	}
+<<<<<<< HEAD
 	if res.Meta.Type != string(typ) {
 		return nil, errors.Errorf("invalid resource of type: %s. Expected: %s", res.Meta.Type, typ)
 	}
 	if err := core_mesh.ValidateMeta(res.Meta.GetName(), res.Meta.GetMesh(), scope); err.HasViolations() {
+=======
+
+	if err := core_mesh.ValidateMeta(res.GetMeta().GetName(), res.GetMeta().GetMesh(), res.Descriptor().Scope); err.HasViolations() {
+>>>>>>> 57212439 (chore(tools): Simplify resource-gen.go by generating`ResourceDescriptor` (#2511))
 		return nil, &err
 	}
 

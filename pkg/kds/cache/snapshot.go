@@ -8,7 +8,12 @@ import (
 	"github.com/pkg/errors"
 
 	mesh_proto "github.com/kumahq/kuma/api/mesh/v1alpha1"
+<<<<<<< HEAD
 	"github.com/kumahq/kuma/pkg/kds"
+=======
+	"github.com/kumahq/kuma/pkg/core/resources/model"
+	"github.com/kumahq/kuma/pkg/core/resources/registry"
+>>>>>>> 57212439 (chore(tools): Simplify resource-gen.go by generating`ResourceDescriptor` (#2511))
 	util_xds "github.com/kumahq/kuma/pkg/util/xds"
 )
 
@@ -59,8 +64,13 @@ type Snapshot struct {
 var _ util_xds.Snapshot = &Snapshot{}
 
 func (s *Snapshot) GetSupportedTypes() (types []string) {
+<<<<<<< HEAD
 	for _, typ := range kds.SupportedTypes {
 		types = append(types, string(typ))
+=======
+	for _, def := range registry.Global().ObjectTypes(model.HasKdsEnabled()) {
+		types = append(types, string(def))
+>>>>>>> 57212439 (chore(tools): Simplify resource-gen.go by generating`ResourceDescriptor` (#2511))
 	}
 	return
 }

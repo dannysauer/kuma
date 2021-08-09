@@ -50,6 +50,28 @@ type Resource struct {
 	Spec model.ResourceSpec
 }
 
+<<<<<<< HEAD
+=======
+// NewFromModel create a REST Resource from the given model Resource.
+func NewFromModel(m model.Resource) *Resource {
+	if m == nil {
+		return nil
+	}
+
+	meta := m.GetMeta()
+	return &Resource{
+		Meta: ResourceMeta{
+			Type:             string(m.Descriptor().Name),
+			Mesh:             meta.GetMesh(),
+			Name:             meta.GetName(),
+			CreationTime:     meta.GetCreationTime(),
+			ModificationTime: meta.GetModificationTime(),
+		},
+		Spec: m.GetSpec(),
+	}
+}
+
+>>>>>>> 57212439 (chore(tools): Simplify resource-gen.go by generating`ResourceDescriptor` (#2511))
 type ResourceList struct {
 	Total uint32      `json:"total"`
 	Items []*Resource `json:"items"`

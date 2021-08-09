@@ -28,6 +28,10 @@ import (
 	"github.com/kumahq/kuma/pkg/core/resources/store"
 	"github.com/kumahq/kuma/pkg/core/runtime/component"
 	kds_client "github.com/kumahq/kuma/pkg/kds/client"
+<<<<<<< HEAD
+=======
+	kds_context "github.com/kumahq/kuma/pkg/kds/context"
+>>>>>>> 57212439 (chore(tools): Simplify resource-gen.go by generating`ResourceDescriptor` (#2511))
 	sync_store "github.com/kumahq/kuma/pkg/kds/store"
 	"github.com/kumahq/kuma/pkg/kds/zone"
 	"github.com/kumahq/kuma/pkg/plugins/resources/memory"
@@ -50,7 +54,11 @@ var _ = Describe("Zone Sync", func() {
 	zoneName := "zone-1"
 
 	newPolicySink := func(zoneName string, resourceSyncer sync_store.ResourceSyncer, cs *grpc.MockClientStream, rt core_runtime.Runtime) component.Component {
+<<<<<<< HEAD
 		return kds_client.NewKDSSink(core.Log, zone.ConsumedTypes, kds_client.NewKDSStream(cs, zoneName), zone.Callbacks(rt, resourceSyncer, false, zoneName, nil))
+=======
+		return kds_client.NewKDSSink(core.Log, registry.Global().ObjectTypes(model.HasKDSFlag(model.ConsumedByZone)), kds_client.NewKDSStream(cs, zoneName), zone.Callbacks(rt, resourceSyncer, false, zoneName, nil))
+>>>>>>> 57212439 (chore(tools): Simplify resource-gen.go by generating`ResourceDescriptor` (#2511))
 	}
 	start := func(comp component.Component, stop chan struct{}) {
 		go func() {
@@ -91,7 +99,11 @@ var _ = Describe("Zone Sync", func() {
 		wg.Add(1)
 
 		kdsCtx := kds_context.DefaultContext(manager.NewResourceManager(globalStore), "global")
+<<<<<<< HEAD
 		serverStream := setup.StartServer(globalStore, wg, "global", zone.ConsumedTypes, kdsCtx.GlobalProvidedFilter)
+=======
+		serverStream := setup.StartServer(globalStore, wg, "global", registry.Global().ObjectTypes(model.HasKDSFlag(model.ConsumedByZone)), kdsCtx.GlobalProvidedFilter)
+>>>>>>> 57212439 (chore(tools): Simplify resource-gen.go by generating`ResourceDescriptor` (#2511))
 
 		stop := make(chan struct{})
 		clientStream := serverStream.ClientStream(stop)
@@ -157,14 +169,9 @@ var _ = Describe("Zone Sync", func() {
 		}
 
 		// take all mesh-scoped types and exclude types that won't be synced
-		actualConsumedTypes := []model.ResourceType{}
-		for _, typ := range registry.Global().ListTypes() {
-			obj, err := registry.Global().NewObject(typ)
-			Expect(err).ToNot(HaveOccurred())
-			if obj.Scope() == model.ScopeMesh && !excludeTypes[typ] {
-				actualConsumedTypes = append(actualConsumedTypes, typ)
-			}
-		}
+		actualConsumedTypes := registry.Global().ObjectTypes(model.HasScope(model.ScopeMesh), model.TypeFilterFn(func(descriptor model.ResourceTypeDescriptor) bool {
+			return !excludeTypes[descriptor.Name]
+		}))
 
 		// plus 2 global-scope types
 		extraTypes := []model.ResourceType{
@@ -175,8 +182,12 @@ var _ = Describe("Zone Sync", func() {
 		}
 
 		actualConsumedTypes = append(actualConsumedTypes, extraTypes...)
+<<<<<<< HEAD
 		Expect(actualConsumedTypes).To(HaveLen(len(zone.ConsumedTypes)))
 		Expect(actualConsumedTypes).To(ConsistOf(zone.ConsumedTypes))
+=======
+		Expect(actualConsumedTypes).To(ConsistOf(registry.Global().ObjectTypes(model.HasKDSFlag(model.ConsumedByZone))))
+>>>>>>> 57212439 (chore(tools): Simplify resource-gen.go by generating`ResourceDescriptor` (#2511))
 	})
 
 	It("should not delete predefined ConfigMaps in the Zone cluster", func() {

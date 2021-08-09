@@ -9,10 +9,20 @@ import (
 	"github.com/kumahq/kuma/pkg/api-server/customization"
 
 	api_server "github.com/kumahq/kuma/pkg/api-server"
+<<<<<<< HEAD
 	"github.com/kumahq/kuma/pkg/api-server/definitions"
 	config_api_server "github.com/kumahq/kuma/pkg/config/api-server"
 	kuma_cp "github.com/kumahq/kuma/pkg/config/app/kuma-cp"
 	"github.com/kumahq/kuma/pkg/core/resources/manager"
+=======
+	"github.com/kumahq/kuma/pkg/api-server/customization"
+	config_api_server "github.com/kumahq/kuma/pkg/config/api-server"
+	kuma_cp "github.com/kumahq/kuma/pkg/config/app/kuma-cp"
+	"github.com/kumahq/kuma/pkg/core/resources/manager"
+	"github.com/kumahq/kuma/pkg/core/resources/model"
+	"github.com/kumahq/kuma/pkg/core/resources/model/rest"
+	"github.com/kumahq/kuma/pkg/core/resources/registry"
+>>>>>>> 57212439 (chore(tools): Simplify resource-gen.go by generating`ResourceDescriptor` (#2511))
 	"github.com/kumahq/kuma/pkg/core/resources/store"
 	core_metrics "github.com/kumahq/kuma/pkg/metrics"
 	"github.com/kumahq/kuma/pkg/test"
@@ -117,7 +127,7 @@ func createTestApiServer(store store.ResourceStore, config *config_api_server.Ap
 		config.Auth.ClientCertsDir = filepath.Join("..", "..", "test", "certs", "client")
 	}
 
-	defs := append(definitions.All, SampleTrafficRouteWsDefinition)
+	defs := append(registry.Global().ObjectDescriptors(model.HasWsEnabled()), sample_model.TrafficRouteResourceTypeDescriptor)
 	resources := manager.NewResourceManager(store)
 	wsManager := customization.NewAPIList()
 	cfg := kuma_cp.DefaultConfig()
